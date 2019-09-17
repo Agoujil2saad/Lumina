@@ -15,7 +15,7 @@ enum SystemButtonType {
         case off
         case auto
     }
-
+    
     case torch
     case cameraSwitch
     case photoCapture
@@ -24,10 +24,10 @@ enum SystemButtonType {
 }
 
 final class LuminaButton: UIButton {
-    private var squareSystemButtonWidth = 40
-    private var squareSystemButtonHeight = 40
-    private var cancelButtonWidth = 70
-    private var cancelButtonHeight = 30
+    private var squareSystemButtonWidth = 25
+    private var squareSystemButtonHeight = 25
+    private var cancelButtonWidth = 20
+    private var cancelButtonHeight = 20
     private var shutterButtonDimension = 70
     private var style: SystemButtonType?
     private var border: UIView?
@@ -41,7 +41,7 @@ final class LuminaButton: UIButton {
             _image = newValue
         }
     }
-
+    
     private var _text: String?
     var text: String? {
         get {
@@ -52,7 +52,7 @@ final class LuminaButton: UIButton {
             _text = newValue
         }
     }
-
+    
     required init() {
         super.init(frame: CGRect.zero)
         self.backgroundColor = UIColor.clear
@@ -62,7 +62,7 @@ final class LuminaButton: UIButton {
             titleLabel.textAlignment = .center
         }
     }
-
+    
     init(with systemStyle: SystemButtonType) {
         super.init(frame: CGRect.zero)
         self.style = systemStyle
@@ -81,14 +81,13 @@ final class LuminaButton: UIButton {
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 50, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
             addButtonShadowEffects()
         case .cancel:
-            self.text = "X"
-            self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
-            self.titleLabel?.font = UIFont.systemFont(ofSize: 40, weight: .light)
-            self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
-            self.titleLabel?.layer.shadowOpacity = 1
-            self.titleLabel?.layer.shadowRadius = 6
+            self.image = UIImage(named: "cameraClose", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            self.frame = CGRect(origin: CGPoint(x: 10, y: 10), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
         case .shutter:
-            self.backgroundColor = UIColor.normalState
+            self.image = UIImage(named: "cameraIcon", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            self.imageView?.contentMode = .scaleAspectFit
+            self.imageEdgeInsets = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 15.0, right: 15.0)
+            self.backgroundColor = UIColor.white
             var minY = UIScreen.main.bounds.maxY
             if #available(iOS 11, *) {
                 minY = self.safeAreaLayoutGuide.layoutFrame.maxY
@@ -97,18 +96,18 @@ final class LuminaButton: UIButton {
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: minY), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
             self.layer.borderWidth = 3
-            self.layer.borderColor = UIColor.borderNormalState
+            self.layer.borderColor = UIColor.white.cgColor
         default:
             break
         }
     }
-
+    
     private func addButtonShadowEffects() {
         self.layer.shadowOffset = CGSize(width: 0, height: 0)
         self.layer.shadowOpacity = 1
         self.layer.shadowRadius = 6
     }
-
+    
     func startRecordingVideo() {
         if style == .shutter {
             DispatchQueue.main.async {
@@ -120,7 +119,7 @@ final class LuminaButton: UIButton {
             }
         }
     }
-
+    
     func stopRecordingVideo() {
         if style == .shutter {
             DispatchQueue.main.async {
@@ -132,7 +131,7 @@ final class LuminaButton: UIButton {
             }
         }
     }
-
+    
     func takePhoto() {
         if style == .shutter {
             DispatchQueue.main.async {
@@ -148,7 +147,7 @@ final class LuminaButton: UIButton {
             }
         }
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -177,23 +176,23 @@ fileprivate extension UIColor {
     class var normalState: UIColor {
         return UIColor(white: 1.0, alpha: 0.65)
     }
-
+    
     class var recordingState: UIColor {
         return UIColor.red.withAlphaComponent(0.65)
     }
-
+    
     class var takePhotoState: UIColor {
         return UIColor.lightGray.withAlphaComponent(0.65)
     }
-
+    
     class var borderNormalState: CGColor {
         return UIColor.gray.cgColor
     }
-
+    
     class var borderRecordingState: CGColor {
         return UIColor.red.cgColor
     }
-
+    
     class var borderTakePhotoState: CGColor {
         return UIColor.darkGray.cgColor
     }

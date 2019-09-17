@@ -17,14 +17,14 @@ extension LuminaViewController {
         currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
         LuminaLogger.notice(message: "setting zoom scale to \(currentZoomScale)")
     }
-
+    
     @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
         delegate?.tapped(at: recognizer.location(in: view), from: self)
         if position == .back {
             focusCamera(at: recognizer.location(in: view))
         }
     }
-
+    
     func createUI() {
         LuminaLogger.notice(message: "Creating UI")
         self.view.layer.addSublayer(self.previewLayer)
@@ -37,7 +37,7 @@ extension LuminaViewController {
         self.view.addGestureRecognizer(self.focusRecognizer)
         enableUI(valid: false)
     }
-
+    
     func enableUI(valid: Bool) {
         DispatchQueue.main.async {
             self.shutterButton.isEnabled = valid
@@ -45,7 +45,7 @@ extension LuminaViewController {
             self.torchButton.isEnabled = valid
         }
     }
-
+    
     func updateUI(orientation: UIInterfaceOrientation) {
         LuminaLogger.notice(message: "updating UI for orientation: \(orientation.rawValue)")
         guard let connection = self.previewLayer.connection, connection.isVideoOrientationSupported else {
@@ -55,9 +55,9 @@ extension LuminaViewController {
         connection.videoOrientation = necessaryVideoOrientation(for: orientation)
         self.camera?.updateOutputVideoOrientation(connection.videoOrientation)
     }
-
-    func updateButtonFrames() {
-        self.cancelButton.center = CGPoint(x: self.view.frame.minX + 55, y: self.view.frame.maxY - 45)
+    
+    func  updateButtonFrames() {
+        self.cancelButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + 40)
         var minY = self.view.frame.minY
         if self.view.frame.width > self.view.frame.height {
             var maxX = self.view.frame.maxX
@@ -73,15 +73,15 @@ extension LuminaViewController {
             }
             self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
         }
-        self.switchButton.center = CGPoint(x: self.view.frame.maxX - 30, y: self.view.frame.minY + (UIDevice.hasNotch ? 40 : 25))
-        self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + (UIDevice.hasNotch ? 40 : 25))
+        self.switchButton.center = CGPoint(x: self.view.frame.maxX - 67, y: self.view.frame.minY + (UIDevice.hasNotch ? 40 : 25))
+        self.torchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + (UIDevice.hasNotch ? 40 : 25))
         /// Use more width, if text has been moved down below the buttons (e.g. notch on iPhone X):
         let textWidth = self.view.frame.maxX - (minY > 35 ? 20 : 110)
         self.textPromptView.frame.size = CGSize(width: textWidth - 10, height: 80)
         self.textPromptView.layoutSubviews()
         self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: minY + 45)
     }
-
+    
     // swiftlint:disable cyclomatic_complexity
     func handleCameraSetupResult(_ result: CameraSetupResult) {
         LuminaLogger.notice(message: "camera set up result: \(result.rawValue)")
@@ -130,7 +130,7 @@ extension LuminaViewController {
             }
         }
     }
-
+    
     private func necessaryVideoOrientation(for statusBarOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
         switch statusBarOrientation {
         case .portrait:
